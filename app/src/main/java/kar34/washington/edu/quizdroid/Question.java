@@ -41,7 +41,7 @@ public class Question extends ActionBarActivity {
         RadioButton radio4 = (RadioButton) findViewById(R.id.radio4);
 
         int i = 0;
-        spfor (String answer : answers) {
+        for (String answer : answers) {
             if (i == 0)
                 radio1.setText(answer);
             else if (i == 1)
