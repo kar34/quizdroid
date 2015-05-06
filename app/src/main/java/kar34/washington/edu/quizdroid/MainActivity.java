@@ -27,10 +27,10 @@ public class MainActivity extends ActionBarActivity {
         theList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent overview = new Intent(MainActivity.this, Overview.class);
+                Intent next = new Intent(MainActivity.this, DetailedActivity.class);
                 String subject = adapterItems.getItem(position);
-                overview.putExtra("subject", subject);
-                startActivity(overview);
+                next.putExtra("subject", subject);
+                startActivity(next);
             }
         });
     }

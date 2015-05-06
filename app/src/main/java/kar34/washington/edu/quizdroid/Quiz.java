@@ -1,12 +1,11 @@
 package kar34.washington.edu.quizdroid;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.util.Log;
+import android.app.Application;
+
 import java.io.Serializable;
 import java.util.HashMap;
 
-public class Quiz implements Serializable {
+public class Quiz extends Application implements Serializable {
 
     private String subject;
     private String description;
@@ -16,13 +15,23 @@ public class Quiz implements Serializable {
     private String[] questions;
     private HashMap<String, HashMap<Boolean, String>> qMap;
     private HashMap<String, HashMap<String, Boolean>> aMap;
+    private static Quiz instance;
+    private boolean pastCorrect;
 
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        if(this.instance != null)
+            throw new IllegalStateException("Current game already in session.");
+        else
+            this.instance = this;
+    }
 
-    public Quiz(String subject) {
+    public void start(String subject) {
         this.subject = subject;
         this.currentQ = 1;
         this.numCorrect = 0;
-        Log.d("this is a subject", this.subject);
+        this.pastCorrect = false;
 
         if (subject.equals("Math")) {
             this.description = "math is a wonderful thing, math is a really cool thing";
@@ -41,6 +50,41 @@ public class Quiz implements Serializable {
         }
         fillQMap();
         fillAMap();
+    }
+
+/*
+    public Quiz(String subject) {
+        this.subject = subject;
+        this.currentQ = 1;
+        this.numCorrect = 0;
+        this.pastCorrect = false;
+
+        if (subject.equals("Math")) {
+            this.description = "math is a wonderful thing, math is a really cool thing";
+            this.numQs = 5;
+            this.questions = new String[] {"What is 2 + 5?", "What is 3 * 3?", "What is 4 - 5?", "What is 1 + 1?", "What is 69 * 1?"};
+        } else if (subject.equals("Physics")) {
+            this.description = "how things move, bro";
+            this.numQs = 4;
+            this.questions = new String[] {"Who came up with the theory of relativity?", "Newton created which law(s)?", "True or false: Physics courses are offered at UW.", "Who is responsible for the law of universal graduation?"};
+        } else if (subject.equals("Marvel Super Heroes")) {
+            this.description = "its like the hulk and stuff";
+            this.numQs = 3;
+            this.questions = new String[] {"What color is The Hulk?", "True or false: The Iron Man is a Marvel Super Hero.", "True or false: Ronald McDonald is a Marvel Super Hero."};
+        } else {
+            throw new IllegalArgumentException();
+        }
+        fillQMap();
+        fillAMap();
+    }
+*/
+
+    public boolean getPastCorrect() {
+        return pastCorrect;
+    }
+
+    public void setPastCorrect(boolean b) {
+        this.pastCorrect = b;
     }
 
     public String getNumQsAsString() {
@@ -269,6 +313,15 @@ public class Quiz implements Serializable {
             }};
         }
     }
+
+    public static Quiz getInstance() {
+        return instance;
+    }
+
+    public String getSubject() {
+        return this.subject;
+    }
+
 
 
 }
