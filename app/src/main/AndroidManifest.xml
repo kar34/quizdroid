@@ -32,6 +32,14 @@
             android:name=".Answer"
             android:label="@string/title_activity_answer" >
         </activity>
+        <activity
+            android:name=".DetailedActivity"
+            android:label="@string/title_activity_detailed"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="kar34.washington.edu.quizdroid.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

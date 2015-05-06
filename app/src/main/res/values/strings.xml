@@ -7,4 +7,5 @@
     <string name="title_activity_quiz">Quiz</string>
     <string name="title_activity_question">Question</string>
     <string name="title_activity_answer">Answer</string>
+    <string name="title_activity_detailed">DetailedActivity</string>
 </resources>
