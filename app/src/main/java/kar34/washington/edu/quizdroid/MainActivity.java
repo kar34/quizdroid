@@ -9,22 +9,21 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.view.View;
 import android.content.Intent;
+import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
-
-    public String[] subjects = {"Math", "Physics", "Marvel Super Heroes"};
-    private ListView theList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        theList = (ListView) findViewById(R.id.theList);
-        final ArrayAdapter<String> adapterItems = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, subjects);
-        theList.setAdapter(adapterItems);
+        QuizApp quiz = QuizApp.getInstance();
+        ListView lv = (ListView) findViewById(R.id.theList);
+        final ArrayAdapter<String> adapterItems = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, Contents.topicText);
+        lv.setAdapter(adapterItems);
 
-        theList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent next = new Intent(MainActivity.this, DetailedActivity.class);

@@ -14,8 +14,7 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.List;
 
 
 
@@ -29,8 +28,12 @@ public class DetailedActivity extends ActionBarActivity {
         setContentView(R.layout.activity_detailed);
 
         this.intent = getIntent();
-        Quiz quiz = Quiz.getInstance();
-        quiz.start(intent.getStringExtra("subject"));
+        QuizApp quiz = QuizApp.getInstance();
+        TopicRepository repo = quiz.getRepository();
+        Topic topic = repo.getTopics(this.intent.getStringExtra("subject"));
+        QuizMaster master = QuizMaster.getInstance();
+        master.start(topic);
+
 
         if (savedInstanceState == null) {
             Fragment overviewFrag = new OverviewFrag();
@@ -44,7 +47,7 @@ public class DetailedActivity extends ActionBarActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
             final View view = inflater.inflate(R.layout.activity_overview, container, false);
-            Quiz quiz = Quiz.getInstance();
+            QuizMaster quiz = QuizMaster.getInstance();
 
             TextView subject = (TextView) view.findViewById(R.id.subject);
             TextView numQs = (TextView) view.findViewById(R.id.numqs);
@@ -74,10 +77,9 @@ public class DetailedActivity extends ActionBarActivity {
         public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
             // stores data
             final View view = inflater.inflate(R.layout.activity_question, container, false);
-            final Quiz quiz = Quiz.getInstance();
-            String question = quiz.getQuestion();
-            final HashMap<Boolean, String> options = quiz.getAnswerOptions();
-            final Set<String> answers = quiz.getOptionValues().keySet();
+            final QuizMaster master = QuizMaster.getInstance();
+            final Question q = master.getQuestion();
+            final List<String> options = q.getOptions();
 
             // places remaining elements
             final Button button = (Button) view.findViewById(R.id.submit);
@@ -85,26 +87,26 @@ public class DetailedActivity extends ActionBarActivity {
 
             final RadioGroup radios = (RadioGroup) view.findViewById(R.id.radios);
             TextView questionText = (TextView) view.findViewById(R.id.question);
-            questionText.setText(question);
+            questionText.setText(q.getQuestion());
             RadioButton radio1 = (RadioButton) view.findViewById(R.id.radio1);
             RadioButton radio2 = (RadioButton) view.findViewById(R.id.radio2);
             RadioButton radio3 = (RadioButton) view.findViewById(R.id.radio3);
             RadioButton radio4 = (RadioButton) view.findViewById(R.id.radio4);
 
             int i = 0;
-            for (String answer : answers) {
+            for (String option : options) {
                 if (i == 0)
-                    radio1.setText(answer);
+                    radio1.setText(option);
                 else if (i == 1)
-                    radio2.setText(answer);
+                    radio2.setText(option);
                 else if (i == 2)
-                    radio3.setText(answer);
+                    radio3.setText(option);
                 else
-                    radio4.setText(answer);
+                    radio4.setText(option);
                 i++;
             }
 
-            if (quiz.isLastQ())
+            if (master.isLastQ())
                 button.setText("Finish");
 
 
@@ -113,7 +115,7 @@ public class DetailedActivity extends ActionBarActivity {
                 @Override
                 public void onClick(View v) {
                     RadioButton chosen = (RadioButton) view.findViewById(radios.getCheckedRadioButtonId());
-                    String correct = quiz.getAnswer(options);
+                    String correct = options.get(q.getCorrAnsPos());
 
                     Fragment aFrag = new AnswerFrag();
                     Bundle b = new Bundle();
@@ -146,12 +148,12 @@ public class DetailedActivity extends ActionBarActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
             final View view = inflater.inflate(R.layout.activity_answer, container, false);
-            final Quiz quiz = Quiz.getInstance();
+            final QuizMaster master = QuizMaster.getInstance();
             Bundle b = getArguments();
 
-            quiz.incCurrentQ();
+            master.incCurrentQ();
             if(b.getString("correct").equals(b.getString("chosen"))) {
-                quiz.incNumCorrect();
+                master.incNumCorrect();
             }
 
             // ui elements
@@ -161,10 +163,10 @@ public class DetailedActivity extends ActionBarActivity {
 
             chosenText.setText("Your answer: " + b.getString("chosen"));
             correctText.setText("Correct answer: " + b.getString("correct"));
-            statsText.setText("You have " + quiz.getNumCorrect() + " of " + quiz.getNumQs() + " correct");
+            statsText.setText("You have " + master.getNumCorrect() + " of " + master.getNumQs() + " correct");
 
             final Button button = (Button) view.findViewById(R.id.button);
-            if (quiz.isDone())
+            if (master.isDone())
                 button.setText("Finish");
             else
                 button.setText("Next");
@@ -173,7 +175,7 @@ public class DetailedActivity extends ActionBarActivity {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(quiz.isDone()) {
+                    if(master.isDone()) {
                         Intent intent = new Intent(getActivity(), MainActivity.class);
                         startActivity(intent);
                     } else {
