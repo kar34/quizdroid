@@ -17,21 +17,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Overview"
-            android:label="@string/title_activity_overview" >
+            android:name=".DetailedActivity"
+            android:label="@string/title_activity_detailed" >
         </activity>
         <activity
-            android:name=".Quiz"
-            android:label="@string/title_activity_quiz" >
+            android:name=".PreferenceActivity"
+            android:label="@string/title_activity_preference" >
         </activity>
-        <activity
-            android:name=".Question"
-            android:label="@string/title_activity_question" >
-        </activity>
-        <activity
-            android:name=".Answer"
-            android:label="@string/title_activity_answer" >
-        </activity>
+
+        <receiver
+            android:name=".QuestionReceiver"
+            android:enabled="true"
+            android:exported="true" >
+        </receiver>
+        
     </application>
 
 </manifest>
