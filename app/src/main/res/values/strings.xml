@@ -10,5 +10,6 @@
     <string name="title_activity_preference">Preference Activity</string>
     <string name="title_activity_main">Main</string>
     <string name="title_activity_detailed">Detailed</string>
+    <string name="pref">Pref</string>
 
 </resources>

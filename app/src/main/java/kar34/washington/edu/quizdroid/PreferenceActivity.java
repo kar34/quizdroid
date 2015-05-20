@@ -13,54 +13,38 @@ import android.widget.EditText;
 
 public class PreferenceActivity extends ActionBarActivity {
 
-    String preference_file_key = "edu.washington.kar34.PREFERENCE_FILE_KEY";
-    String default_request_url = "http://tednewardsandbox.site44.com/questions.json";
-    String default_request_interval = "5";
-    String request_url_key = "request_url";
-    String request_interval_key = "request_interval";
+    String prefKey = "edu.washington.kar34.PREFERENCE_FILE_KEY";
+    String defaultLink = "http://tednewardsandbox.site44.com/questions.json";
+    String defaultInterval = "5";
+    String urlKey = "request_url";
+    String intervalKey = "request_interval";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preference);
 
-        SharedPreferences sp = getSharedPreferences(preference_file_key, Context.MODE_PRIVATE);
-        String requestUrl = sp.getString(request_url_key, default_request_url);
-        String requestInterval = sp.getString(request_interval_key, default_request_interval);
+        SharedPreferences sp = getSharedPreferences(prefKey, Context.MODE_PRIVATE);
+        String requestUrl = sp.getString(urlKey, defaultLink);
+        String requestInterval = sp.getString(intervalKey, defaultInterval);
 
-        final EditText urlText = (EditText) findViewById(R.id.request_url);
+        final EditText urlText = (EditText) findViewById(R.id.urlText);
         urlText.setText(requestUrl);
-        final EditText intervalText = (EditText) findViewById(R.id.request_interval);
+        final EditText intervalText = (EditText) findViewById(R.id.intervalText);
         intervalText.setText(requestInterval);
 
-        /* Button urlButton = (Button) findViewById(R.id.request_url_btn);
-        final Button intervalButton = (Button) findViewById(R.id.request_interval_btn);
-
-        View.OnClickListener buttonListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Button tapped = (Button) v;
-                if (tapped.getId() == R.id.request_interval_btn)
-                    intervalText.setText(default_request_interval);
-                else if (tapped.getId() == R.id.request_url_btn)
-                    urlText.setText(default_request_url);
-            }
-        };
-
-        urlButton.setOnClickListener(buttonListener);
-        intervalButton.setOnClickListener(buttonListener); */
     }
 
     @Override
     protected void onPause() {
         super.onPause();
 
-        EditText urlText = (EditText) findViewById(R.id.request_url);
-        EditText intervalText = (EditText) findViewById(R.id.request_interval);
-        SharedPreferences sp = this.getSharedPreferences(preference_file_key, Context.MODE_PRIVATE);
+        EditText urlText = (EditText) findViewById(R.id.urlText);
+        EditText intervalText = (EditText) findViewById(R.id.intervalText);
+        SharedPreferences sp = this.getSharedPreferences(prefKey, Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sp.edit();
-        edit.putString(request_url_key, urlText.getText().toString());
-        edit.putString(request_interval_key, intervalText.getText().toString());
+        edit.putString(urlKey, urlText.getText().toString());
+        edit.putString(intervalKey, intervalText.getText().toString());
         edit.commit();
     }
 

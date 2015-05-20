@@ -13,13 +13,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.view.View;
 import android.content.Intent;
-import java.util.List;
+
 
 public class MainActivity extends ActionBarActivity {
 
-    String preference_file_key = "edu.washington.kar34.PREFERENCE_FILE_KEY";
-    String request_interval_key = "request_interval";
-    String default_request_interval = "5";
+    String prefKey = "edu.washington.kar34.PREFERENCE_FILE_KEY";
+    String intervalKey = "request_interval";
+    String defaultInterval = "5";
     private PendingIntent pi;
     private AlarmManager am;
 
@@ -49,11 +49,11 @@ public class MainActivity extends ActionBarActivity {
     protected void onStart() {
         super.onStart();
 
-        SharedPreferences sp = this.getSharedPreferences(preference_file_key, Context.MODE_PRIVATE);
-        int milisecs = Integer.parseInt(sp.getString(request_interval_key, default_request_interval)) * 1000;
+        SharedPreferences sp = this.getSharedPreferences(prefKey, Context.MODE_PRIVATE);
+        int milisecs = Integer.parseInt(sp.getString(intervalKey, defaultInterval)) * 1000;
 
-        Intent nextIntent = new Intent(this, QuestionReceiver.class);
-        pi = PendingIntent.getBroadcast(this, 0, nextIntent, 0);
+        Intent next = new Intent(this, QuestionReceiver.class);
+        pi = PendingIntent.getBroadcast(this, 0, next, 0);
 
         am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         am.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), milisecs, pi);
