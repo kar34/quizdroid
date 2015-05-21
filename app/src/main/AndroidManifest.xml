@@ -41,6 +41,9 @@
             android:exported="true" >
         </receiver>
 
+        <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+
+
     </application>
 
 </manifest>

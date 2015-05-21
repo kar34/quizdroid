@@ -1,8 +1,6 @@
 package kar34.washington.edu.quizdroid;
 
-import android.util.Log;
 import android.app.Application;
-
 import java.util.List;
 
 public class QuizApp extends Application {
@@ -13,7 +11,6 @@ public class QuizApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.i("QuizApp", "onCreate loaded and ran.");
         if (instance != null)
             throw new IllegalStateException("Current game already in session.");
         else {

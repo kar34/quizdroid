@@ -4,7 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.widget.Toast;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 public class QuestionReceiver extends BroadcastReceiver {
 
@@ -17,6 +18,15 @@ public class QuestionReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         SharedPreferences sp = context.getSharedPreferences(prefKey, Context.MODE_PRIVATE);
-        Toast.makeText(context, sp.getString(urlKey, defaultLink), Toast.LENGTH_SHORT).show();
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(context.CONNECTIVITY_SERVICE);
+        NetworkInfo network = cm.getActiveNetworkInfo();
+        boolean isConnected = network != null && network.isConnectedOrConnecting();
+
+        if (isConnected) {
+            Intent next = new Intent(context, Service.class);
+            next.putExtra("url", sp.getString(urlKey, defaultLink));
+            context.startService(next);
+        }
     }
+
 }

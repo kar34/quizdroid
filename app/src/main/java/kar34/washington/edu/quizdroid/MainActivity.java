@@ -1,27 +1,26 @@
 package kar34.washington.edu.quizdroid;
 
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.*;
+import android.net.NetworkInfo;
+import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ListView;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.*;
 import android.view.View;
-import android.content.Intent;
+import android.net.ConnectivityManager;
 
 
 public class MainActivity extends ActionBarActivity {
 
-    String prefKey = "edu.washington.kar34.PREFERENCE_FILE_KEY";
+    private String prefKey = "edu.washington.kar34.PREFERENCE_FILE_KEY";
     String intervalKey = "request_interval";
     String defaultInterval = "5";
-    private PendingIntent pi;
-    private AlarmManager am;
+    public ConnectivityManager cm;
 
 
     @Override
@@ -43,6 +42,36 @@ public class MainActivity extends ActionBarActivity {
                 startActivity(next);
             }
         });
+
+        cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo network = cm.getActiveNetworkInfo();
+
+        boolean isConnected = network != null && network.isConnectedOrConnecting();
+        boolean isAirplane = false;
+        try {
+            isAirplane = Settings.Global.getInt(this.getContentResolver(), Settings.Global.AIRPLANE_MODE_ON) != 0;
+        } catch (Exception e) {}
+
+        if (!isConnected) {
+            AlertDialog.Builder b = new AlertDialog.Builder(this);
+            b.setTitle("Looks like there's no connection, yo");
+
+            if (isAirplane) {
+                b.setMessage("Airplane mode is currently on. Would you like to turn it off?")
+                    .setPositiveButton("Yay", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            startActivity(new Intent(Settings.ACTION_AIRPLANE_MODE_SETTINGS));
+                        }
+                    })
+                    .setNegativeButton("Nay", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) { }
+                    });
+                b.create().show();
+            } else
+                Toast.makeText(this.getApplicationContext(), "Sorry man, you don't have any bars.", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     @Override
@@ -53,9 +82,9 @@ public class MainActivity extends ActionBarActivity {
         int milisecs = Integer.parseInt(sp.getString(intervalKey, defaultInterval)) * 1000;
 
         Intent next = new Intent(this, QuestionReceiver.class);
-        pi = PendingIntent.getBroadcast(this, 0, next, 0);
+        PendingIntent pi = PendingIntent.getBroadcast(this, 0, next, 0);
 
-        am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         am.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), milisecs, pi);
     }
 
